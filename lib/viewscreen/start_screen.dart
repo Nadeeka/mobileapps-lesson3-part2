@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lesson3/controller/auth_controller.dart';
+import 'package:lesson3/model/constant.dart';
+import 'package:lesson3/viewscreen/userhome_screen.dart';
+import 'package:lesson3/viewscreen/view/view_util.dart';
+import 'package:lesson3/model/photomemo.dart';
 
 class StartScreen extends StatefulWidget {
   static const routeName = '/startScreen';
@@ -69,16 +75,33 @@ class _StartState extends State<StartScreen> {
 }
 
 class _Controller {
-  late _StartState state;
+  _StartState state;
   String? email;
   String? password;
   _Controller(this.state);
 
-  void signin() {
+  void signin() async {
     FormState? currentState = state.formKey.currentState;
     if (currentState == null) return;
     if (!currentState.validate()) return;
     currentState.save();
+
+    User? user;
+
+    try {
+      if (email == null || password == null) {
+        throw 'email or password is null';
+      }
+      user = await AuthController.signIn(email: email!, password: password!);
+      Navigator.pushNamed(
+        state.context,
+        UserHomeScreen.routeName,
+        arguments: {ArgKey.user: user},
+      );
+    } catch (e) {
+      if (Constant.devMode) print('********** Sign In Error: $e');
+      showSnackBar(context: state.context, message: 'Sign In Error: $e');
+    }
   }
 
   String? validateEmail(String? value) {
