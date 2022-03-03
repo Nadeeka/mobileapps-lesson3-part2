@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/viewscreen/addphotomemo_screen.dart';
@@ -29,7 +31,11 @@ class Lesson3App extends StatelessWidget {
           } else {
             var argument = args as Map;
             var user = argument[ArgKey.user];
-            return UserHomeScreen(user: user);
+            var photoMemoList = argument[ArgKey.photoMemoList];
+            return UserHomeScreen(
+              user: user,
+              photoMemoList: photoMemoList,
+            );
           }
         },
         AddPhotoMemoScreen.routeName: (context) {
@@ -39,7 +45,11 @@ class Lesson3App extends StatelessWidget {
           } else {
             var argument = args as Map;
             var user = argument[ArgKey.user];
-            return AddPhotoMemoScreen(user: user);
+            var photoMemoList = argument[ArgKey.photoMemoList];
+            return AddPhotoMemoScreen(
+              user: user,
+              photoMemoList: photoMemoList,
+            );
           }
         },
       },

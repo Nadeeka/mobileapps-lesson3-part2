@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lesson3/controller/auth_controller.dart';
+import 'package:lesson3/controller/firestore_controller.dart';
 import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/viewscreen/userhome_screen.dart';
 import 'package:lesson3/viewscreen/view/view_util.dart';
@@ -86,6 +87,7 @@ class _Controller {
     if (!currentState.validate()) return;
     currentState.save();
 
+    startCircularProgress(state.context);
     User? user;
 
     try {
@@ -93,12 +95,21 @@ class _Controller {
         throw 'email or password is null';
       }
       user = await AuthController.signIn(email: email!, password: password!);
+      List<PhotoMemo> photoMemoList =
+          await FireStoreController.getPhotoMemoList(email: email!);
+
+      stopCircularProgress(state.context);
+
       Navigator.pushNamed(
         state.context,
         UserHomeScreen.routeName,
-        arguments: {ArgKey.user: user},
+        arguments: {
+          ArgKey.user: user,
+          ArgKey.photoMemoList: photoMemoList,
+        },
       );
     } catch (e) {
+      stopCircularProgress(state.context);
       if (Constant.devMode) print('********** Sign In Error: $e');
       showSnackBar(context: state.context, message: 'Sign In Error: $e');
     }

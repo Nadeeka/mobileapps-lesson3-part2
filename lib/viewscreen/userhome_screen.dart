@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lesson3/controller/auth_controller.dart';
 import 'package:lesson3/model/constant.dart';
+import 'package:lesson3/model/photomemo.dart';
 import 'package:lesson3/viewscreen/addphotomemo_screen.dart';
 import 'package:lesson3/viewscreen/view/view_util.dart';
+import 'package:lesson3/viewscreen/view/webimage.dart';
 
 class UserHomeScreen extends StatefulWidget {
-  const UserHomeScreen({required this.user, Key? key}) : super(key: key);
+  const UserHomeScreen(
+      {required this.user, required this.photoMemoList, Key? key})
+      : super(key: key);
   static const routeName = '/userHomeScreen';
 
   final User user;
+  final List<PhotoMemo> photoMemoList;
 
   @override
   State<StatefulWidget> createState() {
@@ -59,7 +64,40 @@ class _UserHomeState extends State<UserHomeScreen> {
           child: const Icon(Icons.add),
           onPressed: con.addButton,
         ),
-        body: Text('User Home for $email'),
+        body: widget.photoMemoList.isEmpty
+            ? Text(
+                'No PhotoMemo Found!',
+                style: Theme.of(context).textTheme.headline6,
+              )
+            : ListView.builder(
+                itemCount: widget.photoMemoList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: WebImage(
+                      url: widget.photoMemoList[index].photoURL,
+                      context: context,
+                    ),
+                    title: Text(widget.photoMemoList[index].title),
+                    subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.photoMemoList[index].memo.length >= 40
+                                ? widget.photoMemoList[index].memo
+                                        .substring(0, 40) +
+                                    '...'
+                                : widget.photoMemoList[index].memo,
+                          ),
+                          Text(
+                              'Created By: ${widget.photoMemoList[index].createdBy}'),
+                          Text(
+                              'Shared with: ${widget.photoMemoList[index].sharedWith}'),
+                          Text(
+                              'Timestamp: ${widget.photoMemoList[index].timestamp}'),
+                        ]),
+                  );
+                },
+              ),
       ),
     );
   }
@@ -69,9 +107,14 @@ class _Controller {
   _UserHomeState state;
   _Controller(this.state);
 
-  void addButton() {
-    Navigator.pushNamed(state.context, AddPhotoMemoScreen.routeName,
-        arguments: {ArgKey.user: state.widget.user});
+  void addButton() async {
+    await Navigator.pushNamed(state.context, AddPhotoMemoScreen.routeName,
+        arguments: {
+          ArgKey.user: state.widget.user,
+          ArgKey.photoMemoList: state.widget.photoMemoList,
+        });
+
+    state.render(() {}); //rerender the screen
 
     //Navigate to AddPhotoMemoScreen
   }

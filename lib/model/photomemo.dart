@@ -1,3 +1,16 @@
+enum PhotoSource { camera, gallery }
+
+enum DocKeyPhotoMemo {
+  createdBy,
+  title,
+  memo,
+  photoFilename,
+  photoURL,
+  timestamp,
+  imaLabel,
+  sharedwith
+}
+
 class PhotoMemo {
   String? docId; // Firestore auto-generated id
   late String createdBy;
@@ -22,6 +35,43 @@ class PhotoMemo {
   }) {
     this.imageLabels = imageLabels == null ? [] : [...imageLabels];
     this.sharedWith = sharedWith == null ? [] : [...sharedWith];
+  }
+
+  //serialization
+  Map<String, dynamic> toFireStoreDoc() {
+    return {
+      DocKeyPhotoMemo.title.name: title,
+      DocKeyPhotoMemo.createdBy.name: createdBy,
+      DocKeyPhotoMemo.memo.name: memo,
+      DocKeyPhotoMemo.photoFilename.name: photoFilename,
+      DocKeyPhotoMemo.photoURL.name: photoURL,
+      DocKeyPhotoMemo.timestamp.name: timestamp,
+      DocKeyPhotoMemo.sharedwith.name: sharedWith,
+      DocKeyPhotoMemo.imaLabel.name: imageLabels,
+    };
+  }
+
+  //deserialization
+
+  static PhotoMemo? fromFireStoreDoc({
+    required Map<String, dynamic> doc,
+    required String docId,
+  }) {
+    return PhotoMemo(
+      docId: docId,
+      createdBy: doc[DocKeyPhotoMemo.createdBy.name] ??= 'N/A',
+      title: doc[DocKeyPhotoMemo.title.name] ??= 'N/A',
+      memo: doc[DocKeyPhotoMemo.memo.name] ??= 'N/A',
+      photoFilename: doc[DocKeyPhotoMemo.photoFilename.name] ??= 'N/A',
+      photoURL: doc[DocKeyPhotoMemo.photoURL.name] ??= 'N/A',
+      sharedWith: doc[DocKeyPhotoMemo.sharedwith.name] ??= [],
+      imageLabels: doc[DocKeyPhotoMemo.imaLabel.name] ??= [],
+      timestamp: doc[DocKeyPhotoMemo.timestamp.name] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              doc[DocKeyPhotoMemo.timestamp.name].millisecondsSinceEpoch,
+            )
+          : DateTime.now(),
+    );
   }
 
   static String? validateTitle(String? value) {

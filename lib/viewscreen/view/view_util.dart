@@ -39,3 +39,20 @@ void showAlertDialog({
         );
       });
 }
+
+void startCircularProgress(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return const Center(
+        child: CircularProgressIndicator(
+          strokeWidth: 10.0,
+        ),
+      );
+    },
+  );
+}
+
+void stopCircularProgress(BuildContext context) {
+  Navigator.of(context).pop();
+}
