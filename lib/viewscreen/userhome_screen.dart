@@ -7,6 +7,7 @@ import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/model/photomemo.dart';
 import 'package:lesson3/viewscreen/addphotomemo_screen.dart';
 import 'package:lesson3/viewscreen/detailedview_screen.dart';
+import 'package:lesson3/viewscreen/sharedwith_screen.dart';
 import 'package:lesson3/viewscreen/view/view_util.dart';
 import 'package:lesson3/viewscreen/view/webimage.dart';
 
@@ -93,9 +94,14 @@ class _UserHomeState extends State<UserHomeScreen> {
               accountEmail: Text(email),
             ),
             ListTile(
-              leading: Icon(Icons.logout),
+              leading: const Icon(Icons.logout),
               title: const Text('Sign Out'),
               onTap: con.signOut,
+            ),
+            ListTile(
+              leading: const Icon(Icons.people),
+              title: const Text('Shared With'),
+              onTap: con.sharedWith,
             ),
           ],
         )),
@@ -157,6 +163,28 @@ class _Controller {
   _Controller(this.state) {
     photoMemoList = state.widget.photoMemoList;
   }
+
+  void sharedWith() async {
+    try {
+      List<PhotoMemo> photoMemoList =
+          await FireStoreController.getPhotoMemoListSharedWithMe(
+              email: state.email);
+      await Navigator.pushNamed(
+        state.context,
+        SharedWithScreen.routeName,
+        arguments: {
+          ArgKey.photoMemoList: photoMemoList,
+          ArgKey.user: state.widget.user,
+        },
+      );
+      Navigator.of(state.context).pop(); // push in the drawer
+    } catch (e) {
+      if (Constant.devMode) print('======= get SharedWith list error: $e');
+      showSnackBar(
+          context: state.context, message: 'Failed to get Sharedwith list: $e');
+    }
+  }
+
   void cancel() {
     state.render(() => selected.clear());
   }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lesson3/model/constant.dart';
+import 'package:lesson3/viewscreen/view/view_util.dart';
+
+import '../controller/auth_controller.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = '/signUpScreen';
@@ -91,7 +95,31 @@ class _Controller {
   String? password;
   String? confirmPassword;
 
-  void signUp() {}
+  void signUp() async {
+    FormState? currentState = state.formKey.currentState;
+    if (currentState == null || currentState.validate()) return;
+    currentState.save();
+    if (password != confirmPassword) {
+      showSnackBar(
+          context: state.context,
+          seconds: 20,
+          message: 'PAssword do not match');
+      return;
+    }
+    try {
+      await AuthController.createAccount(email: email!, password: password!);
+      showSnackBar(
+          context: state.context,
+          seconds: 20,
+          message: 'Account Created! Sign In and use the app!');
+    } catch (e) {
+      if (Constant.devMode) print('=======sign up failed: $e');
+      showSnackBar(
+          context: state.context,
+          seconds: 20,
+          message: 'Cannot create account: $e');
+    }
+  }
 
   String? validateEmail(String? value) {
     if (value == null || !(value.contains('@') && value.contains('.'))) {

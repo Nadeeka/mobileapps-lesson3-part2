@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 class AuthController {
   static Future<User?> signIn(
@@ -13,7 +12,7 @@ class AuthController {
     await FirebaseAuth.instance.signOut();
   }
 
-  static Future<void> CreateAccount({
+  static Future<void> createAccount({
     required String email,
     required String password,
   }) async {

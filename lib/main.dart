@@ -5,6 +5,7 @@ import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/viewscreen/addphotomemo_screen.dart';
 import 'package:lesson3/viewscreen/detailedview_screen.dart';
 import 'package:lesson3/viewscreen/error_screen.dart';
+import 'package:lesson3/viewscreen/sharedwith_screen.dart';
 import 'package:lesson3/viewscreen/signup_screen.dart';
 import 'package:lesson3/viewscreen/start_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -69,6 +70,20 @@ class Lesson3App extends StatelessWidget {
           }
         },
         SignUpScreen.routeName: (context) => const SignUpScreen(),
+        SharedWithScreen.routeName: (context) {
+          Object? args = ModalRoute.of(context)?.settings.arguments;
+          if (args == null) {
+            return const ErrorScreen('args is null USerHomeScreen');
+          } else {
+            var argument = args as Map;
+            var user = argument[ArgKey.user];
+            var photoMemoList = argument[ArgKey.photoMemoList];
+            return SharedWithScreen(
+              user: user,
+              photoMemoList: photoMemoList,
+            );
+          }
+        },
       },
     );
   }
