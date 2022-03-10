@@ -94,14 +94,14 @@ class _UserHomeState extends State<UserHomeScreen> {
               accountEmail: Text(email),
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Sign Out'),
-              onTap: con.signOut,
-            ),
-            ListTile(
               leading: const Icon(Icons.people),
               title: const Text('Shared With'),
               onTap: con.sharedWith,
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Sign Out'),
+              onTap: con.signOut,
             ),
           ],
         )),
