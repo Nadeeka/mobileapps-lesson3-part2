@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/viewscreen/addphotomemo_screen.dart';
+import 'package:lesson3/viewscreen/detailedview_screen.dart';
 import 'package:lesson3/viewscreen/error_screen.dart';
+import 'package:lesson3/viewscreen/signup_screen.dart';
 import 'package:lesson3/viewscreen/start_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lesson3/viewscreen/userhome_screen.dart';
@@ -52,6 +54,21 @@ class Lesson3App extends StatelessWidget {
             );
           }
         },
+        DetailedViewScreen.routeName: (context) {
+          Object? args = ModalRoute.of(context)?.settings.arguments;
+          if (args == null) {
+            return const ErrorScreen('args is null DetailedView Screen');
+          } else {
+            var argument = args as Map;
+            var user = argument[ArgKey.user];
+            var photoMemo = argument[ArgKey.onePhotoMemo];
+            return DetailedViewScreen(
+              user: user,
+              photoMemo: photoMemo,
+            );
+          }
+        },
+        SignUpScreen.routeName: (context) => const SignUpScreen(),
       },
     );
   }

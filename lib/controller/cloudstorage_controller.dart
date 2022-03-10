@@ -24,4 +24,10 @@ class CloudStorageController {
       ArgKey.filename: filename,
     };
   }
+
+  static Future<void> deleteFile({
+    required String filename,
+  }) async {
+    await FirebaseStorage.instance.ref().child(filename).delete();
+  }
 }

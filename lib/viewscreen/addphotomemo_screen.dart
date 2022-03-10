@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lesson3/controller/cloudstorage_controller.dart';
 import 'package:lesson3/controller/firestore_controller.dart';
+import 'package:lesson3/controller/ml_controller.dart';
 import 'package:lesson3/model/constant.dart';
 import 'package:lesson3/model/photomemo.dart';
 import 'package:image_picker/image_picker.dart';
@@ -176,6 +177,8 @@ class _Controller {
       );
       tempMemo.photoFilename = result[ArgKey.filename];
       tempMemo.photoURL = result[ArgKey.downloadURL];
+      tempMemo.imageLabels =
+          await GoogleMlController.getImageLabels(photo: state.photo!);
       tempMemo.createdBy = state.widget.user.email!;
       tempMemo.timestamp = DateTime.now(); // millisec from 1971/1/1
 
@@ -210,10 +213,10 @@ class _Controller {
   }
 
   void saveSharedWith(String? value) {
-    if (value != null && value.trim().isEmpty) {
+    if (value != null && value.trim().isNotEmpty) {
       var emailList =
           value.trim().split(RegExp('(,|; )+')).map((e) => e.trim()).toList();
-      //tempMemo.sharedwith = emailList;
+      tempMemo.sharedwith = emailList;
     }
   }
 }

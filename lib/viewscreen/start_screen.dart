@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lesson3/controller/auth_controller.dart';
 import 'package:lesson3/controller/firestore_controller.dart';
 import 'package:lesson3/model/constant.dart';
+import 'package:lesson3/viewscreen/signup_screen.dart';
 import 'package:lesson3/viewscreen/userhome_screen.dart';
 import 'package:lesson3/viewscreen/view/view_util.dart';
 import 'package:lesson3/model/photomemo.dart';
@@ -37,38 +38,50 @@ class _StartState extends State<StartScreen> {
       ),
       body: Form(
         key: formKey,
-        child: Column(
-          children: [
-            Text(
-              'PhotoMemo',
-              style: Theme.of(context).textTheme.headline3,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Email Address',
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                'PhotoMemo',
+                style: Theme.of(context).textTheme.headline3,
               ),
-              keyboardType: TextInputType.emailAddress,
-              autocorrect: false,
-              validator: con.validateEmail,
-              onSaved: con.saveEmail,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Password',
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Email Address',
+                ),
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
+                validator: con.validateEmail,
+                onSaved: con.saveEmail,
               ),
-              autocorrect: false,
-              obscureText: true,
-              validator: con.validatePassword,
-              onSaved: con.savePassword,
-            ),
-            ElevatedButton(
-              onPressed: con.signin,
-              child: Text(
-                'Sign In',
-                style: Theme.of(context).textTheme.button,
+              TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'Password',
+                ),
+                autocorrect: false,
+                obscureText: true,
+                validator: con.validatePassword,
+                onSaved: con.savePassword,
               ),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: con.signin,
+                child: Text(
+                  'Sign In',
+                  style: Theme.of(context).textTheme.button,
+                ),
+              ),
+              SizedBox(
+                height: 24.0,
+              ),
+              OutlinedButton(
+                onPressed: con.signUp,
+                child: Text(
+                  'Create a new account',
+                  style: Theme.of(context).textTheme.button,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -80,6 +93,10 @@ class _Controller {
   String? email;
   String? password;
   _Controller(this.state);
+
+  void signUp() {
+    Navigator.pushNamed(state.context, SignUpScreen.routeName);
+  }
 
   void signin() async {
     FormState? currentState = state.formKey.currentState;

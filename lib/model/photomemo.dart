@@ -20,7 +20,7 @@ class PhotoMemo {
   late String photoURL; // URL of image
   DateTime? timestamp;
   late List<dynamic> imageLabels; // ML generated image labels
-  late List<dynamic> sharedWith;
+  late List<dynamic> sharedwith;
 
   PhotoMemo({
     this.docId,
@@ -31,10 +31,38 @@ class PhotoMemo {
     this.photoURL = '',
     this.timestamp,
     List<dynamic>? imageLabels,
-    List<dynamic>? sharedWith,
+    List<dynamic>? sharedwith,
   }) {
     this.imageLabels = imageLabels == null ? [] : [...imageLabels];
-    this.sharedWith = sharedWith == null ? [] : [...sharedWith];
+    this.sharedwith = sharedwith == null ? [] : [...sharedwith];
+  }
+
+  PhotoMemo.clone(PhotoMemo p) {
+    docId = p.docId;
+    createdBy = p.createdBy;
+    title = p.title;
+    memo = p.memo;
+    photoFilename = p.photoFilename;
+    photoURL = p.photoURL;
+    timestamp = p.timestamp;
+    sharedwith = [...p.sharedwith];
+    imageLabels = [...p.imageLabels];
+  }
+
+  //a.copyFrom(b) ==> a = b
+
+  void copyFrom(PhotoMemo p) {
+    docId = p.docId;
+    createdBy = p.createdBy;
+    title = p.title;
+    memo = p.memo;
+    photoFilename = p.photoFilename;
+    photoURL = p.photoURL;
+    timestamp = p.timestamp;
+    sharedwith.clear();
+    sharedwith.addAll(p.sharedwith);
+    imageLabels.clear();
+    imageLabels.addAll(p.imageLabels);
   }
 
   //serialization
@@ -46,7 +74,7 @@ class PhotoMemo {
       DocKeyPhotoMemo.photoFilename.name: photoFilename,
       DocKeyPhotoMemo.photoURL.name: photoURL,
       DocKeyPhotoMemo.timestamp.name: timestamp,
-      DocKeyPhotoMemo.sharedwith.name: sharedWith,
+      DocKeyPhotoMemo.sharedwith.name: sharedwith,
       DocKeyPhotoMemo.imaLabel.name: imageLabels,
     };
   }
@@ -64,7 +92,7 @@ class PhotoMemo {
       memo: doc[DocKeyPhotoMemo.memo.name] ??= 'N/A',
       photoFilename: doc[DocKeyPhotoMemo.photoFilename.name] ??= 'N/A',
       photoURL: doc[DocKeyPhotoMemo.photoURL.name] ??= 'N/A',
-      sharedWith: doc[DocKeyPhotoMemo.sharedwith.name] ??= [],
+      sharedwith: doc[DocKeyPhotoMemo.sharedwith.name] ??= [],
       imageLabels: doc[DocKeyPhotoMemo.imaLabel.name] ??= [],
       timestamp: doc[DocKeyPhotoMemo.timestamp.name] != null
           ? DateTime.fromMillisecondsSinceEpoch(

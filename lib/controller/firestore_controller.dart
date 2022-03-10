@@ -31,4 +31,44 @@ class FireStoreController {
     }
     return result;
   }
+
+  static Future<void> updatePhotoMemo({
+    required String docId,
+    required Map<String, dynamic> update,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection(Constant.photoMemoCollection)
+        .doc(docId)
+        .update(update);
+  }
+
+  static Future<List<PhotoMemo>> searchImages({
+    required String email,
+    required List<String> searchLabel, //search
+  }) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(Constant.photoMemoCollection)
+        .where(DocKeyPhotoMemo.createdBy.name, isEqualTo: email)
+        .where(DocKeyPhotoMemo.imaLabel.name, arrayContainsAny: searchLabel)
+        .orderBy(DocKeyPhotoMemo.timestamp.name, descending: true)
+        .get();
+
+    var result = <PhotoMemo>[];
+    for (var doc in querySnapshot.docs) {
+      var p = PhotoMemo.fromFireStoreDoc(
+          doc: doc.data() as Map<String, dynamic>, docId: doc.id);
+      if (p != null) result.add(p);
+    }
+
+    return result;
+  }
+
+  static Future<void> deleteDoc({
+    required String docId,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection(Constant.photoMemoCollection)
+        .doc(docId)
+        .delete();
+  }
 }
