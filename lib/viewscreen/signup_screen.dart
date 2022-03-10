@@ -97,7 +97,7 @@ class _Controller {
 
   void signUp() async {
     FormState? currentState = state.formKey.currentState;
-    if (currentState == null || currentState.validate()) return;
+    if (currentState == null || !currentState.validate()) return;
     currentState.save();
     if (password != confirmPassword) {
       showSnackBar(
